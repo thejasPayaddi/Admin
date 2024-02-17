@@ -22,7 +22,7 @@ async function savePhotosLocal(FormData){
         //doesn't work in vercel serverless
         const tempDir = os.tmpdir();
         const uploadDir = path.join(tempDir,`/${name}.${ext}`);//works in vercel serverless
-        console.log(tempDir);
+        // console.log(tempDir);
        
         fs.writeFile(uploadDir,buffer);
         return {filePath:uploadDir,fileName: file.name};
@@ -47,7 +47,7 @@ export async function uploadPhoto(formData) {
     try {
         const newFiles= await savePhotosLocal(formData);
         const photos =await uploadPhotosToCloudinary(newFiles);
-        console.log(photos);
+        // console.log(photos);
         newFiles.map(file => fs.unlink(file.filePath));
         const newPhotos = photos.map(photo=>{
             const newPhoto = new Photo({

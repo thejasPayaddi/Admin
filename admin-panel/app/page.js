@@ -5,7 +5,7 @@ import React from 'react'
 
 const Home = async () => {
   const photos= await getAllPhotos();
-  console.log(photos)
+  // console.log(photos)
   return (
     <div>
       <h1>Nextjs Server Actions Upload image files</h1>
