@@ -4,12 +4,12 @@ import PhotoCard from './PhotoCard';
 import Buttonsubmit from './Buttonsubmit';
 import { revalidate, uploadPhoto } from '@/actions/UploadActions';
 
-const UploadForm = () => {
+const UploadForm = ({folder}) => {
     const formRef=useRef();
     const [files, setFiles] = useState([]);
     async function handleInputFiles (e){
         const files = e.target.files;
-       const newfiles= [...files].filter(file =>{if (file.size < 1024 * 1024 && file.type.startsWith('image/')){
+       const newfiles= [...files].filter(file =>{if (file.size < 10024 * 10024 && file.type.startsWith('image/')){
               return file;
             }});
        setFiles(prev => [...newfiles, ...prev]);
@@ -21,11 +21,11 @@ const UploadForm = () => {
     }
     async function handleUpload (){
         if(!files.length) return alert('No image files are selected');
-        if(files.length > 3) return alert('Only 3 image files are allowed');
+        if(files.length > 1) return alert('Only 1 image files are allowed');
         const formData = new FormData();
 
         files.forEach(file => formData.append('files', file));
-        const res= await uploadPhoto(formData,"Home-Photos");
+        const res= await uploadPhoto(formData,folder);
         if(res?.msg) alert(res?.msg);
         if(res?.errMsg) alert(`Error: ${res?.errMsg}`);
         setFiles([]);
@@ -39,7 +39,7 @@ const UploadForm = () => {
         <div style={{background : '#ddd', minHeight: 200,margin: '10px 0', padding: 10}}>
             <input type='file' accept='image/*' multiple onChange={handleInputFiles} />
         <h5 style={{color: 'red'}}>
-            (*) Only accept image files less than 1MB in size. upto 5 photo files.
+            (*) Only accept image files less than 10MB in size. upto 1 photo files.
         </h5>
         {/* Preview Images */}
         <div style={{display: 'flex',gap:10,flexWrap:'wrap',margin:'10px 0'}}>
