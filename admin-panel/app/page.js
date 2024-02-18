@@ -4,7 +4,13 @@ import UploadForm from '@/components/UploadForm'
 import React from 'react'
 
 const Home = async () => {
-  const photos= await getAllPhotos();
+  // const photos= await getAllPhotos();
+  // Get all photos from default folder
+const allPhotos = await getAllPhotos();
+
+// Get all photos from a specific folder
+const photos = await getAllPhotos('Home-photos');
+
   // console.log(photos)
   return (
     <div>

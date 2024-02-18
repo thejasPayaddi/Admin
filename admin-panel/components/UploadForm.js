@@ -25,7 +25,7 @@ const UploadForm = () => {
         const formData = new FormData();
 
         files.forEach(file => formData.append('files', file));
-        const res= await uploadPhoto(formData);
+        const res= await uploadPhoto(formData,"Home-Photos");
         if(res?.msg) alert(res?.msg);
         if(res?.errMsg) alert(`Error: ${res?.errMsg}`);
         setFiles([]);

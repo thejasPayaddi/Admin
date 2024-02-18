@@ -31,10 +31,10 @@ async function savePhotosLocal(FormData){
    return await Promise.all(multipleBuffersPromise);
 }
 
-async function uploadPhotosToCloudinary(newFiles){
+async function uploadPhotosToCloudinary(newFiles,folder){
     const multipleUploadPromise = newFiles.map(file => (
         cloudinary.v2.uploader.upload(file.filePath, {
-            folder: 'nextjs-server-actions',
+            folder: folder,
         })
         ))
         return await Promise.all(multipleUploadPromise);
@@ -43,10 +43,10 @@ async function uploadPhotosToCloudinary(newFiles){
         return new Promise(resolve=>setTimeout(resolve,delayInms));
     }
 
-export async function uploadPhoto(formData) {
+export async function uploadPhoto(formData,folder) {
     try {
         const newFiles= await savePhotosLocal(formData);
-        const photos =await uploadPhotosToCloudinary(newFiles);
+        const photos =await uploadPhotosToCloudinary(newFiles,folder);
         // console.log(photos);
         newFiles.map(file => fs.unlink(file.filePath));
         const newPhotos = photos.map(photo=>{
@@ -58,21 +58,30 @@ export async function uploadPhoto(formData) {
         })
         // console.log(newPhotos);
 
-        await delay(2000);
+        await delay(1000);
         revalidatePath('/');
         return {msg: 'Upload successfully'}
     } catch (error) {
         return {errms: error.message}
     }
 }
-export async function getAllPhotos(formData) {
-    try {
-        const {resources} =await cloudinary.v2.search.expression('folder:nextjs-server-actions/*').sort_by('created_at','desc').max_results(500).execute();
-        // const resources = await Photo.find().sort({createdAt: 'desc'}).limit(500);
+// export async function getAllPhotos(formData) {
+//     try {
+//         const {resources} =await cloudinary.v2.search.expression('folder:nextjs-server-actions/*').sort_by('created_at','desc').max_results(500).execute();
+//         // const resources = await Photo.find().sort({createdAt: 'desc'}).limit(500);
 
+//         return resources;
+//     } catch (error) {
+//         return {errms: error.message}
+//     }
+// }
+export async function getAllPhotos(folder) {
+    try {
+        const expression = folder ? `folder:${folder}/*` : 'folder:nextjs-server-actions/*';
+        const { resources } = await cloudinary.v2.search.expression(expression).sort_by('created_at', 'desc').max_results(500).execute();
         return resources;
     } catch (error) {
-        return {errms: error.message}
+        return { errms: error.message };
     }
 }
 export async function deletePhoto(public_id) {
